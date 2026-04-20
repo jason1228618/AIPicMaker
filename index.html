@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 產圖工具 | Image Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+    
+    <div class="container">
+        <header>
+            <h1>AI 產圖工具</h1>
+            <p class="subtitle">釋放你的創造力</p>
+        </header>
+
+        <main class="grid-layout">
+            <!-- Left Column: Controls -->
+            <section class="controls-panel glass-panel">
+                <div class="form-group">
+                    <label for="apiKey">Google AI API Key</label>
+                    <input type="password" id="apiKey" placeholder="輸入您的 API Key...">
+                </div>
+
+                <div class="form-group">
+                    <label for="modelSelect">選擇模型</label>
+                    <select id="modelSelect">
+                        <option value="imagen-3.0-generate-001">nano banana 2</option>
+                        <option value="imagen-3.0-fast-generate-001">nano banana pro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="savedPrompts">已儲存題詞</label>
+                    <select id="savedPrompts">
+                        <option value="">-- 選擇已儲存的題詞 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="promptInput">題詞 (Prompt)</label>
+                    <textarea id="promptInput" rows="4" placeholder="描述您想產生的圖片..."></textarea>
+                    <button id="savePromptBtn" class="btn btn-secondary">儲存此題詞</button>
+                </div>
+
+                <div class="form-group">
+                    <label>參考圖片 (選填)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="referenceImage" accept="image/*">
+                        <div class="file-upload-ui">
+                            <span class="upload-icon">📸</span>
+                            <span id="uploadText">點擊上傳圖片</span>
+                        </div>
+                    </div>
+                    <div id="imagePreviewContainer" class="hidden">
+                        <img id="imagePreview" src="" alt="預覽圖片">
+                        <button id="removeImageBtn" class="btn-icon">✖</button>
+                    </div>
+                </div>
+
+                <button id="generateBtn" class="btn btn-primary">產生圖片 ✨</button>
+            </section>
+
+            <!-- Right Column: Result -->
+            <section class="result-panel glass-panel">
+                <div class="result-header">
+                    <h2>產生結果</h2>
+                </div>
+                <div class="result-content" id="resultContent">
+                    <div class="empty-state">
+                        <span class="empty-icon">🎨</span>
+                        <p>等待產生圖片...</p>
+                    </div>
+                    <div class="loading-state hidden">
+                        <div class="spinner"></div>
+                        <p>AI 正在揮灑畫筆...</p>
+                    </div>
+                    <div class="success-state hidden">
+                        <img id="generatedImage" src="" alt="產生的圖片">
+                        <a id="downloadBtn" class="btn btn-secondary" download="generated-image.jpg">下載圖片</a>
+                    </div>
+                    <div class="error-state hidden">
+                        <span class="error-icon">⚠️</span>
+                        <p id="errorMessage"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
