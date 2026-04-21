@@ -114,29 +114,44 @@ document.addEventListener('DOMContentLoaded', () => {
         generateBtn.textContent = '產生中...';
 
         try {
-            // Google Generative Language API generateContent Endpoint
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-            
-            const payload = {
-                contents: [{
-                    parts: [{ text: prompt }]
-                }],
-                generationConfig: {
-                    // 要求回傳圖片格式 (針對支援的生圖模型)
-                    responseMimeType: "image/jpeg"
-                }
-            };
+            let endpoint;
+            let payload;
 
-            // 如果有提供參考圖片，加入到 payload 中
-            if (currentBase64Image) {
-                const matches = currentBase64Image.match(/^data:(image\/[a-zA-Z]+);base64,(.*)$/);
-                if (matches && matches.length === 3) {
-                    payload.contents[0].parts.push({
-                        inlineData: {
-                            mimeType: matches[1],
-                            data: matches[2]
-                        }
-                    });
+            if (model.startsWith('imagen')) {
+                endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:predict?key=${apiKey}`;
+                payload = {
+                    instances: [
+                        { prompt: prompt }
+                    ],
+                    parameters: {
+                        sampleCount: 1
+                    }
+                };
+                
+                // Note: Generative Language API's Imagen predict endpoint might have a different format for reference images.
+                // We'll focus on text-to-image for Imagen models here.
+                if (currentBase64Image) {
+                    console.warn("Reference images are currently not fully supported for Imagen models via this basic implementation.");
+                }
+            } else {
+                endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                payload = {
+                    contents: [{
+                        parts: [{ text: prompt }]
+                    }]
+                };
+
+                // 如果有提供參考圖片，加入到 payload 中
+                if (currentBase64Image) {
+                    const matches = currentBase64Image.match(/^data:(image\/[a-zA-Z]+);base64,(.*)$/);
+                    if (matches && matches.length === 3) {
+                        payload.contents[0].parts.push({
+                            inlineData: {
+                                mimeType: matches[1],
+                                data: matches[2]
+                            }
+                        });
+                    }
                 }
             }
 
