@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const imagePreview = document.getElementById('imagePreview');
     const removeImageBtn = document.getElementById('removeImageBtn');
     const generateBtn = document.getElementById('generateBtn');
-    
+
     // States
     const emptyState = document.querySelector('.empty-state');
     const loadingState = document.querySelector('.loading-state');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load Saved Prompts
     function loadSavedPrompts() {
         const saved = JSON.parse(localStorage.getItem('savedPrompts') || '[]');
-        
+
         // Keep only default option
         while (savedPromptsSelect.options.length > 1) {
             savedPromptsSelect.remove(1);
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         sampleCount: 1
                     }
                 };
-                
+
                 // Note: Generative Language API's Imagen predict endpoint might have a different format for reference images.
                 // We'll focus on text-to-image for Imagen models here.
                 if (currentBase64Image) {
@@ -138,7 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 payload = {
                     contents: [{
                         parts: [{ text: prompt }]
-                    }]
+                    }],
+                    generationConfig: {
+                        responseModalities: ['TEXT', 'IMAGE']
+                    }
                 };
 
                 // 如果有提供參考圖片，加入到 payload 中
@@ -170,12 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Extract image from response (支援 Gemini 格式與舊版 Predict 格式)
-            if (data.candidates && data.candidates.length > 0 && 
+            if (data.candidates && data.candidates.length > 0 &&
                 data.candidates[0].content && data.candidates[0].content.parts &&
                 data.candidates[0].content.parts.length > 0) {
-                
+
                 const imagePart = data.candidates[0].content.parts.find(p => p.inlineData);
-                
+
                 if (imagePart) {
                     const imgBase64 = `data:${imagePart.inlineData.mimeType};base64,${imagePart.inlineData.data}`;
                     generatedImage.src = imgBase64;
